@@ -1,0 +1,7 @@
+
+# Dependencies
+
+You will need `libsodium`, a portable version of NaCl. Other than that you are golden.
+
+$ sudo cp kallisti /usr/sbin/kallisti
+

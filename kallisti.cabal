@@ -1,0 +1,89 @@
+Name: kallisti
+Synopsis: Simple and secure VPN
+Version: 0.0.3
+License-File: LICENSE
+Stability: experimental
+Category: Network
+Cabal-Version: >= 1.6
+Build-Type: Simple
+
+Extra-Source-Files: cbits/help.h
+
+Executable kallisti
+    Build-Depends: base >= 4 && < 5, bytestring, base16-bytestring, aeson, pipes, containers,
+                   network, directory, wai, warp, websockets, wai-websockets, http-types,
+                   text, aeson-pretty, attoparsec, warp-tls, connection
+    hs-source-dirs:     .
+    ghc-options:        -Wall -O2 -threaded -fno-warn-unused-do-bind -funbox-strict-fields -rtsopts
+    cc-options:         -Wall -O2
+    main-is:            kallisti.hs
+    extra-libraries:    sodium
+
+    if os(mingw32) || os(mingw64)
+        c-sources:          cbits/help-win.c
+        extra-libraries:    Iphlpapi, WinDivert, ws2_32
+        extra-lib-dirs:     lib
+        cc-options:         -D MINGW64
+        cpp-options:        -DCALLCONV=ccall
+
+    if os(linux)
+        build-depends:      unix >= 2.3.0.0
+        c-sources:          cbits/help-linux.c
+        cc-options:         -D LINUX
+        cpp-options:        -DCALLCONV=ccall
+
+    if os(darwin) || os(freebsd)
+        build-depends:      unix >= 2.3.0.0
+        c-sources:          cbits/help-bsd.c
+        cc-options:         -D BSD
+        cpp-options:        -DCALLCONV=ccall
+
+Library
+    Build-Depends: base >= 4 && < 5, bytestring, base16-bytestring, aeson, pipes, containers,
+                   network, directory, wai, warp, websockets, wai-websockets, text,
+                   aeson-pretty, http-types, attoparsec
+
+    Exposed-Modules:
+        Network.Kallisti.Api
+        Network.Kallisti.Builder
+        Network.Kallisti.Config
+        Network.Kallisti.CryptoBox
+        Network.Kallisti.CTools
+        Network.Kallisti.FIFO
+        Network.Kallisti.Protocol
+        Network.Kallisti.Protocol.NaCl0
+        Network.Kallisti.Protocol.NaClTAI
+        Network.Kallisti.Protocol.KallisTAI
+        Network.Kallisti.Protocol.KallistN
+        Network.Kallisti.Protocol.WSRaw
+        Network.Kallisti.Protocol.WSNaClN
+        Network.Kallisti.Session
+        Network.Kallisti.Socket
+        Network.Kallisti.Supervisor
+        Network.Kallisti.TAI
+        Network.Kallisti.TUNTAP
+        Network.Kallisti.Types
+        Network.Kallisti.WinDivert
+
+    ghc-options:        -Wall -O2 -fno-warn-unused-do-bind -funbox-strict-fields
+    cc-options:         -Wall -O2
+    hs-source-dirs:     .
+    extra-libraries:    sodium
+
+    if os(mingw32) || os(mingw64)
+        c-sources:          cbits/help-win.c
+        extra-libraries:    Iphlpapi, ws2_32
+        cc-options:         -D MINGW64
+        cpp-options:        -DCALLCONV=ccall
+
+    if os(linux)
+        build-depends:      unix >= 2.3.0.0
+        c-sources:          cbits/help-linux.c
+        cc-options:         -D LINUX
+        cpp-options:        -DCALLCONV=ccall
+
+    if os(darwin) || os(freebsd)
+        build-depends:      unix >= 2.3.0.0
+        c-sources:          cbits/help-bsd.c
+        cc-options:         -D BSD
+        cpp-options:        -DCALLCONV=ccall
