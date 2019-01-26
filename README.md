@@ -18,14 +18,16 @@ $ sudo kallisti config.json
 
 ## Set point-to-point and a route, for example:
 
+```bash
 $ sudo ip addr 10.42.42.2/24 peer 10.42.42.1 dev kallisti42
 $ sudo ip route add 10.42.42.0/24 dev kallisti42
+```
 
-# Use 2 CPU cores
+## Use 2 CPU cores
 
 `$ sudo kallisti +RTS -N2 -RTS config.json`
 
-# Setting TCPDROP variable for websocket-based peerings (experimental)
+## Setting TCPDROP variable for websocket-based peerings (experimental)
 
 ```bash
 $ export TCPDROP=1024
@@ -86,7 +88,7 @@ Find a way to securely synchronize your system clock (for instance NTP)!
 - wsraw:                   interoperability, asynchronicity
 
 
-Protocols running over websockets secure (wss://) do not gain additional security through TLS,
+Protocols running over websockets secure `wss://` do not gain additional security through TLS,
 since no certificate validation takes place. An additional TLS layers might be interesting
 in special cases of web proxies, that do not handle cleartext websockets well.
 
