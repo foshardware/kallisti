@@ -7,7 +7,8 @@ import Control.Exception (catch)
 import Control.Monad
 import Data.Aeson (eitherDecode)
 import Data.Foldable
-import Data.Map as Map
+import Data.Map (Map, fromList)
+import qualified Data.Map as Map
 import qualified Data.ByteString as S
 import qualified Data.ByteString.Lazy as L
 import Network (listenOn, PortID(UnixSocket))

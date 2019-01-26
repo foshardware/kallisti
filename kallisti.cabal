@@ -9,6 +9,7 @@ Build-Type: Simple
 
 Extra-Source-Files: cbits/help.h
 
+
 Executable kallisti
     Build-Depends: base >= 4 && < 5, bytestring, base16-bytestring, aeson, pipes, containers,
                    network, directory, wai, warp, websockets, wai-websockets, http-types,
@@ -18,6 +19,27 @@ Executable kallisti
     cc-options:         -Wall -O2
     main-is:            kallisti.hs
     extra-libraries:    sodium
+    other-Modules:
+        Network.Kallisti.Api
+        Network.Kallisti.Builder
+        Network.Kallisti.Config
+        Network.Kallisti.CryptoBox
+        Network.Kallisti.CTools
+        Network.Kallisti.FIFO
+        Network.Kallisti.Protocol
+        Network.Kallisti.Protocol.NaCl0
+        Network.Kallisti.Protocol.NaClTAI
+        Network.Kallisti.Protocol.KallisTAI
+        Network.Kallisti.Protocol.KallistN
+        Network.Kallisti.Protocol.WSRaw
+        Network.Kallisti.Protocol.WSNaClN
+        Network.Kallisti.Session
+        Network.Kallisti.Socket
+        Network.Kallisti.Supervisor
+        Network.Kallisti.TAI
+        Network.Kallisti.TUNTAP
+        Network.Kallisti.Types
+        Network.Kallisti.WinDivert
 
     if os(mingw32) || os(mingw64)
         c-sources:          cbits/help-win.c
