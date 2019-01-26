@@ -1,18 +1,20 @@
 
 # Generate a keypair
 
-$ kallisti keypair
+`$ kallisti keypair`
 
-# Use /dev/random instead
+## Use /dev/random instead
 
-$ kallisti scalarmult < /dev/random
+`$ kallisti scalarmult < /dev/random`
 
 
 # Establish peering
 
+```bash
 $ cp example* config.json
 $ nano config.json
 $ sudo kallisti config.json
+```
 
 ## Set point-to-point and a route, for example:
 
@@ -21,12 +23,14 @@ $ sudo ip route add 10.42.42.0/24 dev kallisti42
 
 # Use 2 CPU cores
 
-$ sudo kallisti +RTS -N2 -RTS config.json
+`$ sudo kallisti +RTS -N2 -RTS config.json`
 
 # Setting TCPDROP variable for websocket-based peerings (experimental)
 
+```bash
 $ export TCPDROP=1024
 $ sudo kallisti
+```
 
 This drops every 1024th TCP packet sent from your tun device.
 
@@ -48,38 +52,38 @@ Find a way to securely synchronize your system clock (for instance NTP)!
 
 ## Criteria
 
-authentication:   the playload is authenticated
+- authentication:   the playload is authenticated
 
-encryption:       the payload is encrypted
+- encryption:       the payload is encrypted
 
-forward secrecy:  the payload is encrypted using ephemeral keys
+- forward secrecy:  the payload is encrypted using ephemeral keys
 
-efficiency:       the protocol is designed with maximum performance in mind
+- efficiency:       the protocol is designed with maximum performance in mind
 
-asynchronicity:   after the initial handshake (if any) clock skews do not result in temporary DoS
+- asynchronicity:   after the initial handshake (if any) clock skews do not result in temporary DoS
 
-interoperability: the protocol plays nice with existing web standards like TCP, TLS, HTTP, etc.
-                  and deals with real world limitations like web proxies, firewalls, etc.
+- interoperability: the protocol plays nice with existing web standards like TCP, TLS, HTTP, etc.
+                    and deals with real world limitations like web proxies, firewalls, etc.
 
 ## Comparison
 
-kallistn (experimental): authentication, encryption, asynchronicity, efficiency, forward secrecy
+- kallistn (experimental): authentication, encryption, asynchronicity, efficiency, forward secrecy
 
-kallistai (recommended): authentication, encryption, forward secrecy, effenciency
+- kallistai (recommended): authentication, encryption, forward secrecy, effenciency
 
-nacltai:                 authentication, encryption, effenciency
+- nacltai:                 authentication, encryption, effenciency
 
-nacl0:                   asynchronicity, efficiency
+- nacl0:                   asynchronicity, efficiency
 
-raw:                     efficiency, asynchronicity
+- raw:                     efficiency, asynchronicity
 
-wsnacln (with TLS):      interoperability, authentication, encryption, asynchronicity, forward secrecy
+- wsnacln (with TLS):      interoperability, authentication, encryption, asynchronicity, forward secrecy
 
-wsraw (with TLS):        interoperability, asynchronicity
+- wsraw (with TLS):        interoperability, asynchronicity
 
-wsnacln:                 authentication, encryption, interoperability, asynchronicity, forward secrecy
+- wsnacln:                 authentication, encryption, interoperability, asynchronicity, forward secrecy
 
-wsraw:                   interoperability, asynchronicity
+- wsraw:                   interoperability, asynchronicity
 
 
 Protocols running over websockets secure (wss://) do not gain additional security through TLS,
