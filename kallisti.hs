@@ -77,11 +77,9 @@ main = do
                   -> \s a -> getUnixSocket sp
                   >>= \u -> runTLSSocket (tlsSettings "cert.pem" "key.pem") s u a
           let sessions = fromList [(publicKey p, (p, s, t)) | (p, s, t, _, _) <- peerings]
-          let control  = fromList [(publicKey p, r) | (p, _, _, _, r) <- peerings]
-          now <- newMVar =<< getTAI
           forkIO $ start (localWebPort config `setPort` defaultSettings)
             . websocketsOr defaultConnectionOptions (acknowledgement sessions)
-            $ api now (sharedKey config) exit control cfg
+            $ api
           threadDelay 1000
           dropPrivileges $ setuid config
           takeMVar exit

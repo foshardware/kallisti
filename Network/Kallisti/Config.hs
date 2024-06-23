@@ -3,7 +3,7 @@
 module Network.Kallisti.Config where
 
 import Control.Monad
-import Data.Aeson
+import Data.Aeson hiding (Key)
 import Data.Char
 import Network.Kallisti.CryptoBox
 import Network.Kallisti.Protocol

@@ -5,7 +5,6 @@ module Network.Kallisti.Protocol where
 import Control.Monad
 import Control.Concurrent hiding (yield)
 import Data.ByteString as Strict
-import Data.Foldable
 import Network.Kallisti.CryptoBox
 import Network.Kallisti.Session
 import Network.Kallisti.TAI

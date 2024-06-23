@@ -45,7 +45,7 @@ type Message = ByteString
 type Ciphertext = ByteString
 
 keyFromHex :: String -> Key
-keyFromHex = fst . decode . pack
+keyFromHex = either (error . show) id . decode . pack
 
 hexFromKey :: Key -> String
 hexFromKey = unpack . encode

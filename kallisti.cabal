@@ -12,7 +12,7 @@ Extra-Source-Files: cbits/help.h
 
 Executable kallisti
     Build-Depends: base >= 4 && < 5, bytestring, base16-bytestring, aeson, pipes, containers,
-                   network, directory, wai, warp, websockets, wai-websockets, http-types,
+                   network <= 3.0.0, directory, wai, warp, websockets, wai-websockets, http-types,
                    text, aeson-pretty, attoparsec, warp-tls, connection
     hs-source-dirs:     .
     ghc-options:        -Wall -O2 -threaded -fno-warn-unused-do-bind -funbox-strict-fields -rtsopts
@@ -41,23 +41,10 @@ Executable kallisti
         Network.Kallisti.Types
         Network.Kallisti.WinDivert
 
-    if os(mingw32) || os(mingw64)
-        c-sources:          cbits/help-win.c
-        extra-libraries:    Iphlpapi, WinDivert, ws2_32
-        extra-lib-dirs:     lib
-        cc-options:         -D MINGW64
-        cpp-options:        -DCALLCONV=ccall
-
     if os(linux)
         build-depends:      unix >= 2.3.0.0
         c-sources:          cbits/help-linux.c
         cc-options:         -D LINUX
-        cpp-options:        -DCALLCONV=ccall
-
-    if os(darwin) || os(freebsd)
-        build-depends:      unix >= 2.3.0.0
-        c-sources:          cbits/help-bsd.c
-        cc-options:         -D BSD
         cpp-options:        -DCALLCONV=ccall
 
 Library
@@ -92,20 +79,9 @@ Library
     hs-source-dirs:     .
     extra-libraries:    sodium
 
-    if os(mingw32) || os(mingw64)
-        c-sources:          cbits/help-win.c
-        extra-libraries:    Iphlpapi, ws2_32
-        cc-options:         -D MINGW64
-        cpp-options:        -DCALLCONV=ccall
-
     if os(linux)
         build-depends:      unix >= 2.3.0.0
         c-sources:          cbits/help-linux.c
         cc-options:         -D LINUX
         cpp-options:        -DCALLCONV=ccall
 
-    if os(darwin) || os(freebsd)
-        build-depends:      unix >= 2.3.0.0
-        c-sources:          cbits/help-bsd.c
-        cc-options:         -D BSD
-        cpp-options:        -DCALLCONV=ccall

@@ -3,11 +3,9 @@
 module Network.Kallisti.Protocol.KallisTAI where
 
 import Control.Concurrent hiding (yield)
-import Control.Exception
 import qualified Data.ByteString as Strict
 import Data.ByteString.Internal
 import Data.Foldable
-import Data.Monoid
 import Data.Word
 import Foreign.ForeignPtr
 import Foreign.Ptr

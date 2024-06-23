@@ -2,7 +2,6 @@
 
 module Network.Kallisti.Builder where
 
-import Data.Monoid
 import Data.Word
 import Data.ByteString
 import qualified Data.ByteString.Lazy as Lazy

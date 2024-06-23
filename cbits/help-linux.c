@@ -32,9 +32,7 @@ int setuidgid(const char* account)
   struct passwd *pw;
   pw = getpwnam(account);
   if (!pw) return 1;
-  setgid(pw->pw_gid);
-  setuid(pw->pw_uid);
-  return 0;
+  return setgid(pw->pw_gid) || setuid(pw->pw_uid);
 }
 
 int changeroot(const char* path) { return chroot(path); }
