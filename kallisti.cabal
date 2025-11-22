@@ -38,7 +38,6 @@ Executable kallisti
         Network.Kallisti.TAI
         Network.Kallisti.TUNTAP
         Network.Kallisti.Types
-        Network.Kallisti.WinDivert
 
     if os(linux)
         build-depends:      unix >= 2.3.0.0
@@ -70,7 +69,6 @@ Library
         Network.Kallisti.TAI
         Network.Kallisti.TUNTAP
         Network.Kallisti.Types
-        Network.Kallisti.WinDivert
 
     ghc-options:        -Wall -O2 -fno-warn-unused-do-bind -funbox-strict-fields
     cc-options:         -Wall -O2

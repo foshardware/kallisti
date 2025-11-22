@@ -208,27 +208,3 @@ int32_t get_mac(tap_desc_t * td, MACAddr mac)
     return 0;
 }
 
-struct windivert_desc {};
-
-windivert_desc_t * windivert_open
-  ( const char * filter
-  , int32_t layer
-  , int32_t priority
-  , uint32_t flags
-  , uint32_t srcAddrRewrite
-  ) {
-  fprintf(stderr, "WinDivert not implemented for linux; Use tun mode instead.\n");
-  return (windivert_desc_t *) calloc(1,sizeof(windivert_desc_t));
-}
-
-int32_t windivert_close(windivert_desc_t * wd) { return 0; }
-
-void windivert_set_param(windivert_desc_t * wd, int32_t param, uint32_t value) { }
-
-int32_t windivert_recv(windivert_desc_t * wd, uint8_t * buf, uint32_t len) {
-  return -1;
-}
-
-int32_t windivert_send(windivert_desc_t * wd, uint8_t * buf, uint32_t len, uint32_t direction) {
-  return -1;
-}

@@ -10,7 +10,6 @@ import Network.Kallisti.Session
 import Network.Kallisti.TAI
 import Network.Kallisti.TUNTAP
 import Network.Kallisti.Types
-import Network.Kallisti.WinDivert
 import qualified Network.Kallisti.Protocol.NaCl0 as NaCl0
 import qualified Network.Kallisti.Protocol.NaClTAI as NaClTAI
 import qualified Network.Kallisti.Protocol.KallisTAI as KallisTAI
