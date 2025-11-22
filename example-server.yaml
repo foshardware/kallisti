@@ -1,0 +1,9 @@
+peers:
+  - interface: tun01
+    tapMode: tun
+    protocol: kallistai
+    localAddress: SERVER IP ADDRESS
+    localPort: 5000
+    publicKey: THEIR PUBLIC KEY
+    localWebPort: 5000
+secretKey: YOUR SECRET KEY

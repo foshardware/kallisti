@@ -11,7 +11,7 @@
 # Establish peering
 
 ```bash
-$ cp example* config.yaml
+$ cp example-server.yaml config.yaml
 $ nano config.yaml
 $ sudo kallisti config.yaml
 ```
