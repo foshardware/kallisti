@@ -9,5 +9,5 @@ import Network.Kallisti.WinDivert
 
 type Packet = (ByteString, SockAddr)
 
-data Tap = Dev TAP | Unix Socket | Win Divert | Udp SockAddr Socket
+data Tap = Dev TAP
 

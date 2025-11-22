@@ -8,7 +8,6 @@ import Data.ByteString as Strict
 import Network.Kallisti.CryptoBox
 import Network.Kallisti.Session
 import Network.Kallisti.TAI
-import Network.Kallisti.Socket
 import Network.Kallisti.TUNTAP
 import Network.Kallisti.Types
 import Network.Kallisti.WinDivert
@@ -46,7 +45,7 @@ raw = Protocol
   , sink = \t -> P.mapM_ $ writeTap t . fst
   , encrypt = const cat
   , decrypt = const cat
-  , receiver = \s -> P.repeatM $ recvFromWithOffset s (datagramSize + 16) 0
+  , receiver = \s -> P.repeatM $ recvFrom s (datagramSize + 16)
   , launcher = \s -> P.mapM_ $ \(msg, addr) -> sendAll' s msg addr
   , negotiate = \_ _ _ -> pure ()
   , acknowledge = \_ _ _ -> pure ()
@@ -54,14 +53,7 @@ raw = Protocol
   }
   where
     readTap (Dev t) = readTAP t
-    readTap (Udp _ s) = recv s 2048
-    readTap (Win d) = winDivertRecv d
-    readTap (Unix s) = recv s 2048
-
-    writeTap (Dev t) bs = void $ writeTAP t bs
-    writeTap (Udp a s) bs = void $ sendAllTo s bs a
-    writeTap (Win d) bs = void $ winDivertSend Inbound d bs
-    writeTap (Unix s) bs = void $ send s bs
+    writeTap (Dev t) = void . writeTAP t
 
 nacl0 :: Protocol
 nacl0 = raw
@@ -69,7 +61,7 @@ nacl0 = raw
   , sink = \t -> P.mapM_ $ writeTap t . Strict.drop 32 . fst
   , encrypt = NaCl0.encrypt
   , decrypt = NaCl0.decrypt
-  , receiver = \s -> P.repeatM $ recvFromWithOffset s datagramSize 16
+  , receiver = \s -> P.repeatM $ first (Strict.drop 16) <$> recvFrom s datagramSize
   , launcher = \s -> P.mapM_ $ \(msg, addr) -> sendAll' s (Strict.drop 16 msg) addr
   , initSession = \pk sk -> do
       s' <- newSession
@@ -78,20 +70,15 @@ nacl0 = raw
   }
   where
     readTap (Dev t) = readTAPWithOffset t 32
-    readTap (Udp _ s) = recvWithOffset s 32 2016
-    readTap (Win d) = winDivertRecvWithOffset d 32
-    readTap (Unix s) = error "read from unix socket not implemented"
+    writeTap (Dev t) = void . writeTAP t
 
-    writeTap (Dev t) bs = void $ writeTAP t bs
-    writeTap (Udp a s) bs = void $ sendAllTo s bs a
-    writeTap (Win d) bs = void $ winDivertSend Inbound d bs
-    writeTap (Unix s) bs = void $ send s bs
+    first f (a, b) = (f a, b)
 
 naclTAI :: Protocol
 naclTAI = nacl0
   { encrypt = NaClTAI.encrypt
   , decrypt = NaClTAI.decrypt
-  , receiver = \s -> P.repeatM $ recvFromWithOffset s (datagramSize + 16) 0
+  , receiver = \s -> P.repeatM $ recvFrom s (datagramSize + 16)
   , launcher = \s -> P.mapM_ $ \(msg, addr) -> sendAll' s msg addr
   , initSession = \pk sk -> do
       s' <- initSession nacl0 pk sk

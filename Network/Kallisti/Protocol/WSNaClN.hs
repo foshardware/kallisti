@@ -29,7 +29,6 @@ source k tun connection n = do
     >-> Pipe.mapM_ (sendBinaryData connection)
   where
     readTap (Dev t) = readTUN t
-    readTap (Udp _ s) = Udp.recv s 2048
 
 encrypt :: Shared Key -> Word64 -> Pipe ByteString ByteString IO ()
 encrypt _ n | n > maxBound - 2 = pure ()
@@ -45,7 +44,6 @@ sink k connection tun n = do
     >-> Pipe.mapM_ (writeTap tun)
   where
     writeTap (Dev t) bs = void $ writeTUN t bs
-    writeTap (Udp a s) bs = Udp.sendAllTo s bs a
 
 decrypt :: Shared Key -> Word64 -> Pipe ByteString ByteString IO ()
 decrypt k n = do

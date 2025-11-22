@@ -11,7 +11,6 @@ import Data.Map (Map, fromList)
 import qualified Data.Map as Map
 import qualified Data.ByteString as S
 import qualified Data.ByteString.Lazy as L
-import Network (listenOn, PortID(UnixSocket))
 import Network.Connection
 import Network.Kallisti.Api
 import Network.Kallisti.Config
@@ -20,7 +19,6 @@ import Network.Kallisti.CTools
 import Network.Kallisti.Protocol
 import Network.Kallisti.Session
 import Network.Kallisti.Supervisor
-import Network.Kallisti.TAI
 import Network.Kallisti.TUNTAP
 import Network.Kallisti.Types
 import Network.Socket
@@ -30,7 +28,6 @@ import Network.Wai.Handler.WebSockets
 import Network.WebSockets
 import Network.WebSockets.Stream hiding (close)
 import Pipes
-import System.Directory
 import System.Environment
 import System.Posix.Signals
 import System.IO
@@ -69,13 +66,9 @@ main = do
                   swapMVar session new
                   establish clean config p session tap
             pure (peer, session, tap, clean, restart)
-          let start = case (localWebTLS config, localWebUnix config) of
-                (False, []) -> runSettings
-                (False, sp) -> \s a -> getUnixSocket sp >>= \u -> runSettingsSocket s u a
-                (True, []) -> runTLS $ tlsSettings "cert.pem" "key.pem"
-                (True, sp)
-                  -> \s a -> getUnixSocket sp
-                  >>= \u -> runTLSSocket (tlsSettings "cert.pem" "key.pem") s u a
+          let start = if localWebTLS config
+                      then runTLS $ tlsSettings "cert.pem" "key.pem"
+                      else runSettings
           let sessions = fromList [(publicKey p, (p, s, t)) | (p, s, t, _, _) <- peerings]
           forkIO $ start (localWebPort config `setPort` defaultSettings)
             . websocketsOr defaultConnectionOptions (acknowledgement sessions)
@@ -85,12 +78,6 @@ main = do
           takeMVar exit
           for_ peerings $ \(_,_,_,c,_) -> join $ takeMVar c
           putStrLn "clean exit"
-
-getUnixSocket :: String -> IO Socket
-getUnixSocket s = do
-  exists <- doesFileExist s 
-  when exists $ removeFile s 
-  listenOn $ UnixSocket s 
 
 lookupInfo :: String -> Int -> IO AddrInfo
 lookupInfo l p = head <$> getAddrInfo (Just hints) (Just l) (Just $ show p)
@@ -107,12 +94,6 @@ createTap peer | "tun" == tapMode peer = do
   bringUp tun
   setMTU tun $ mtu peer
   pure $ Dev tun
-createTap peer | "udp" == take 3 (tapMode peer) = do
-  info <- lookupInfo "127.0.0.1" 54712
-  remi <- lookupInfo "127.0.0.1" 54713
-  sock <- socket (addrFamily info) Datagram defaultProtocol
-  bind sock $ addrAddress info
-  pure $ Udp (addrAddress remi) sock 
 createTap _ = fail "tap device not configured"
 
 acknowledgement :: Map (Public Key) (Peer, Session, Tap) -> ServerApp
@@ -162,7 +143,6 @@ establish clean config peer session tap
     sock <- socket (addrFamily info) Datagram defaultProtocol
     bind sock $ addrAddress info
     connect sock $ addrAddress remi
-    unless (udpChecksum peer) $ setSocketOption sock (CustomSockOpt (1, 11)) 1
     i <- forkIO . supervise . runEffect $ receiver proto sock
       >-> decrypt proto session
       >-> sink proto tap
@@ -181,7 +161,6 @@ establish clean _ peer session tap
     info <- lookupInfo local $ localPort peer
     sock <- socket (addrFamily info) Datagram defaultProtocol
     bind sock $ addrAddress info
-    unless (udpChecksum peer) $ setSocketOption sock (CustomSockOpt (1, 11)) 1
     i <- forkIO . supervise . runEffect $ receiver proto sock
       >-> decrypt proto session
       >-> floatIn session
@@ -204,7 +183,6 @@ establish clean config peer session tap
     info <- lookupInfo remote $ remotePort peer
     sock <- socket (addrFamily info) Datagram defaultProtocol
     connect sock $ addrAddress info
-    unless (udpChecksum peer) $ setSocketOption sock (CustomSockOpt (1, 11)) 1
     i <- forkIO . supervise . runEffect $ receiver proto sock
       >-> decrypt proto session
       >-> sink proto tap
