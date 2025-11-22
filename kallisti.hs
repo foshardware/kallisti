@@ -1,11 +1,12 @@
 {-# LANGUAGE PatternGuards, ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications #-}
 
 module Main where
 
 import Control.Concurrent hiding (yield)
 import Control.Exception (catch)
 import Control.Monad
-import Data.Aeson (eitherDecode)
+import Data.Yaml (decodeFileEither)
 import Data.Foldable
 import Data.Map (Map, fromList)
 import qualified Data.Map as Map
@@ -51,9 +52,8 @@ main = do
       exit <- newEmptyMVar
       installHandler sigINT  (Catch $ putStr "SIGINT received..."  >> putMVar exit ()) Nothing
       installHandler sigTERM (Catch $ putStr "SIGTERM received..." >> putMVar exit ()) Nothing 
-      let cfg = head $ args ++ ["config.json"]
-      file <- L.readFile cfg
-      case eitherDecode file of
+      file <- decodeFileEither @Config $ head $ args ++ ["config.yaml"]
+      case file of
         Left e -> putStrLn $ show e
         Right config -> do
           peerings <- forM (peers config) $ \peer -> do

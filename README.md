@@ -11,9 +11,9 @@
 # Establish peering
 
 ```bash
-$ cp example* config.json
-$ nano config.json
-$ sudo kallisti config.json
+$ cp example* config.yaml
+$ nano config.yaml
+$ sudo kallisti config.yaml
 ```
 
 ## Set point-to-point and a route, for example:
@@ -25,7 +25,7 @@ $ sudo ip route add 10.42.42.0/24 dev kallisti42
 
 ## Use 2 CPU cores
 
-`$ sudo kallisti +RTS -N2 -RTS config.json`
+`$ sudo kallisti +RTS -N2 -RTS config.yaml`
 
 ## Setting TCPDROP variable for websocket-based peerings (experimental)
 
@@ -91,8 +91,4 @@ Find a way to securely synchronize your system clock (for instance NTP)!
 Protocols running over websockets secure `wss://` do not gain additional security through TLS,
 since no certificate validation takes place. An additional TLS layers might be interesting
 in special cases of web proxies, that do not handle cleartext websockets well.
-
-
-## API
-
 
