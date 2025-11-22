@@ -12,10 +12,8 @@ import Network.Kallisti.Protocol
 data Config = Config
   { peers :: [Peer]
   , secretKey :: Secret Key
-  , sharedKey :: Shared Key
   , setuid :: Maybe String
   , localWebPort :: Int
-  , localWebUnix :: String
   , localWebTLS :: Bool
   }
 
@@ -31,7 +29,6 @@ data Peer = Peer
   , localPort :: Int
   , publicKey :: Public Key
   , mtu :: Int
-  , udpChecksum :: Bool
   }
 
 protocol :: Peer -> Protocol
@@ -41,10 +38,8 @@ instance FromJSON Config where
   parseJSON (Object v) = Config
     <$> v .:? "peers" .!= []
     <*> (Secret . keyFromHex <$> v .: "secretKey")
-    <*> (Shared . keyFromHex <$> v .: "sharedKey")
     <*> v .:? "setuid"
     <*> v .:? "localWebPort" .!= 7000
-    <*> v .:? "localWebUnix" .!= ""
     <*> v .:? "localWebTLS" .!= False
   parseJSON _ = mzero
 
@@ -54,7 +49,6 @@ instance ToJSON Config where
     , "secretKey" .= hexFromKey sk
     , "setuid" .= setuid c
     , "localWebPort" .= localWebPort c
-    , "localWebUnix" .= localWebUnix c
     , "localWebTLS" .= localWebTLS c
     ]
     where Secret sk = secretKey c
@@ -72,7 +66,6 @@ instance FromJSON Peer where
     <*> v .:? "localPort" .!= 7000
     <*> (Public . keyFromHex <$> v .: "publicKey")
     <*> v .:? "MTU" .!= 1500
-    <*> v .:? "udpChecksum" .!= False
   parseJSON _ = mzero
 
 instance ToJSON Peer where
@@ -88,7 +81,6 @@ instance ToJSON Peer where
     , "localPort" .= localPort p
     , "publicKey" .= hexFromKey pk
     , "MTU" .= mtu p
-    , "udpChecksum" .= udpChecksum p
     ]
     where Public pk = publicKey p
 
