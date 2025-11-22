@@ -60,7 +60,7 @@ nacl0 = raw
   , sink = \t -> P.mapM_ $ writeTap t . Strict.drop 32 . fst
   , encrypt = NaCl0.encrypt
   , decrypt = NaCl0.decrypt
-  , receiver = \s -> P.repeatM $ first (Strict.drop 16) <$> recvFrom s datagramSize
+  , receiver = \s -> P.repeatM $ first (Strict.drop 16) <$> recvFrom s (datagramSize + 16)
   , launcher = \s -> P.mapM_ $ \(msg, addr) -> sendAll' s (Strict.drop 16 msg) addr
   , initSession = \pk sk -> do
       s' <- newSession
