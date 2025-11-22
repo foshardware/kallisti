@@ -5,5 +5,5 @@ peers:
     localAddress: SERVER IP ADDRESS
     localPort: 5000
     publicKey: THEIR PUBLIC KEY
-    localWebPort: 5000
 secretKey: YOUR SECRET KEY
+localWebPort: 5000
