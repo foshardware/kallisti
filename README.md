@@ -19,8 +19,8 @@ $ sudo kallisti config.yaml
 ## Set point-to-point and a route, for example:
 
 ```bash
-$ sudo ip addr 10.42.42.2/24 peer 10.42.42.1 dev kallisti42
-$ sudo ip route add 10.42.42.0/24 dev kallisti42
+$ sudo ip addr add 10.42.42.2/32 peer 10.42.42.1 dev kallisti42
+$ sudo ip route add 10.42.42.0/24 via 10.42.42.1
 ```
 
 ## Use 2 CPU cores
