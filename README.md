@@ -23,10 +23,6 @@ $ sudo ip addr add 10.42.42.2/32 peer 10.42.42.1 dev kallisti42
 $ sudo ip route add 10.42.42.0/24 via 10.42.42.1
 ```
 
-## Use 2 CPU cores
-
-`$ sudo kallisti +RTS -N2 -RTS config.yaml`
-
 ## Setting TCPDROP variable for websocket-based peerings (experimental)
 
 ```bash
@@ -91,4 +87,8 @@ Find a way to securely synchronize your system clock (for instance NTP)!
 Protocols running over websockets secure `wss://` do not gain additional security through TLS,
 since no certificate validation takes place. An additional TLS layers might be interesting
 in special cases of web proxies, that do not handle cleartext websockets well.
+
+## Use 2 GHC capabilities instead of 1
+
+`$ sudo kallisti +RTS -N2 -RTS config.yaml`
 
