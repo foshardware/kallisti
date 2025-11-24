@@ -8,7 +8,10 @@ import Foreign.Ptr
 import Foreign.ForeignPtr
 import Foreign.Storable
 import Foreign.C.Types
+import System.IO.Unsafe
 
+unsafeRO :: IO a -> a
+unsafeRO = unsafeDupablePerformIO
 
 newtype TAI = TAI (ForeignPtr Word8)
 
@@ -40,9 +43,6 @@ getTAICoarse = getTAICoarseAttoOffset 0
 
 taiBytes :: TAI -> ByteString
 taiBytes (TAI t) = fromForeignPtr t 0 16
-
-unsafeRO :: IO a -> a
-unsafeRO = accursedUnutterablePerformIO
 
 taiFromByteString :: ByteString -> TAI
 taiFromByteString bs = case toForeignPtr bs of
