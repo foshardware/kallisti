@@ -71,9 +71,9 @@ Find a way to securely synchronize your system clock (for instance NTP)!
 
 - kallistn (experimental): authentication, encryption, asynchronicity, efficiency, forward secrecy
 
-- kallistai (recommended): authentication, encryption, forward secrecy, effenciency
+- kallistai (recommended): authentication, encryption, forward secrecy, efficiency
 
-- nacltai:                 authentication, encryption, effenciency
+- nacltai:                 authentication, encryption, efficiency
 
 - nacl0:                   asynchronicity, efficiency
 
