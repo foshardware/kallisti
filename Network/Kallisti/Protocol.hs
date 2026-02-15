@@ -60,8 +60,8 @@ nacl0 = raw
   , sink = \t -> P.mapM_ $ writeTap t . Strict.drop 32 . fst
   , encrypt = NaCl0.encrypt
   , decrypt = NaCl0.decrypt
-  , receiver = \s -> P.repeatM $ first (Strict.drop 16) <$> recvFrom s (datagramSize + 16)
-  , launcher = \s -> P.mapM_ $ \(msg, addr) -> sendAll' s (Strict.drop 16 msg) addr
+  , receiver = \s -> P.repeatM $ recvFrom s datagramSize
+  , launcher = \s -> P.mapM_ $ \(msg, addr) -> sendAll' s msg addr
   , initSession = \pk sk -> do
       s' <- newSession
       modifyMVar_ s' $ \s -> pure s { shared = cryptoBoxBeforeNM pk sk }
@@ -70,8 +70,6 @@ nacl0 = raw
   where
     readTap (Dev t) = readTAPWithOffset t 32
     writeTap (Dev t) = void . writeTAP t
-
-    first f (a, b) = (f a, b)
 
 naclTAI :: Protocol
 naclTAI = nacl0
